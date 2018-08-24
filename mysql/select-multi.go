@@ -3,14 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-
 	_ "github.com/go-sql-driver/mysql"
 )
-
-// 取得した各行を格納する
-type Row struct {
-	textColumn string
-}
 
 func main() {
 
@@ -19,20 +13,13 @@ func main() {
 	defer db.Close()
 
 	// Select文発行
-	rows, _ := db.Query(`
-      SELECT
-            text_column
-      FROM
-			test_tbl
-	  LIMIT
-	  		10
-	`)
+	rows, _ := db.Query("SELECT id, text_column FROM test_tbl")
 	defer rows.Close()
 
 	// 1行ずつ取得
 	for rows.Next() {
-		var r Row
-		rows.Scan(&(r.textColumn))
-		fmt.Println(r)
+		id, textColumn := 0, ""
+		rows.Scan(&id, &textColumn)
+		fmt.Printf("id=%d, text_column='%s'\n", id, textColumn)
 	}
 }
